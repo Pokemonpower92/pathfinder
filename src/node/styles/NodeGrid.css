@@ -1,0 +1,8 @@
+.grid {
+    display: grid;
+    grid-template-columns: repeat(50, minmax(20px, 1fr));
+    grid-template-rows: repeat(50, minmax(20px, 1fr));
+    width: 900px;
+    height: 900px;
+    background-color: red;
+}
