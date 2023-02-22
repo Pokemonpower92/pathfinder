@@ -1,15 +1,21 @@
-.nodePath, .nodeSource, .nodeSink {
-  border: 1px solid black;
+.nodePath,
+.nodeSource,
+.nodeSink {
+	border: 1px solid black;
 }
 
 .nodePath {
-  background-color: grey;
+	background-color: grey;
 }
 
 .nodeSource {
-  background-color: green;
+	background-color: green;
 }
 
 .nodeSink {
-  background-color: red;
+	background-color: red;
+}
+
+.nodeWall {
+	background-color: blue;
 }
