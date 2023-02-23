@@ -22,7 +22,7 @@ export class NodeGrid extends Component {
     this.handleNodeClick = this.handleNodeClick.bind(this);
     this.setSource = this.setSource.bind(this);
     this.setSink = this.setSink.bind(this);
-    this.addWall = this.addWall.bind(this);
+    this.addOrRemoveWall = this.addOrRemoveWall.bind(this);
     this.clearWalls = this.clearWalls.bind(this);
   }
 
@@ -34,21 +34,21 @@ export class NodeGrid extends Component {
 
   handleSourceButtonPress = () => {
     this.setState({
-      nodeType: "Source"
+      nodeType: "Source",
     });
-  }
+  };
 
   handleSinkButtonPress = () => {
     this.setState({
-      nodeType: "Sink"
+      nodeType: "Sink",
     });
-  }
+  };
 
   handleWallButtonPress = () => {
     this.setState({
-      nodeType: "Wall"
+      nodeType: "Wall",
     });
-  }
+  };
 
   createNewGrid = () => {
     let newNodes = [];
@@ -137,41 +137,41 @@ export class NodeGrid extends Component {
       this.setSink(node);
     }
     if (this.state.nodeType === "Wall") {
-      this.addWall(this.state.nodes, node.row, node.col);
+      this.addOrRemoveWall(this.state.nodes, node.row, node.col);
     }
   };
 
-  addWall = (grid, row, column) => {
+  addOrRemoveWall = (grid, row, column) => {
     const newGrid = grid.slice();
     const node = newGrid[row * 45 + column];
 
-    console.log("Add wall called atleast.")
-    console.log(this.state)
+    console.log(this.state);
 
     const newNode = {
       ...node,
-      type: "Wall",
+      type: node.type === "Wall" ? "Path" : "Wall",
     };
     newGrid[row * 45 + column] = newNode;
 
     this.setState({
       nodes: newGrid,
     });
-  }
+  };
 
   clearWalls = () => {
     const newGrid = this.state.nodes.slice();
 
-    newGrid.map(node => {
+    newGrid.map((node) => {
       if (node.type === "Wall") {
-        node.type = "Path"
+        node.type = "Path";
       }
+      return node;
     });
 
     this.setState({
-      nodes: newGrid
+      nodes: newGrid,
     });
-  }
+  };
 
   render() {
     const { nodes } = this.state;
@@ -192,19 +192,27 @@ export class NodeGrid extends Component {
           <button
             onClick={() => this.handleSourceButtonPress()}
             className="changeNodeSelect"
-          >Change Source</button>
+          >
+            Change Source
+          </button>
           <button
             onClick={() => this.handleSinkButtonPress()}
             className="changeNodeSelect"
-          >Change Sink</button>
+          >
+            Change Sink
+          </button>
           <button
             onClick={() => this.handleWallButtonPress()}
             className="changeNodeSelect"
-          >Add Wall</button>
+          >
+            Add Wall
+          </button>
           <button
             onClick={() => this.clearWalls()}
             className="changeNodeSelect"
-          >Clear Walls</button>
+          >
+            Clear Walls
+          </button>
         </div>
       </div>
     );
