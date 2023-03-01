@@ -1,6 +1,10 @@
 import React, { Component } from "react";
 
 import Node from "./Node";
+import djkstras from "../algorithms/djkstras";
+import { NUM_ROWS, NUM_COLS } from "../utils/constants";
+
+
 import "./styles/NodeGrid.css";
 
 export class NodeGrid extends Component {
@@ -13,6 +17,7 @@ export class NodeGrid extends Component {
 
   constructor(props) {
     super(props);
+    this.doDjkstras = this.doDjkstras.bind(this);
     this.handleSourceButtonPress = this.handleSourceButtonPress.bind(this);
     this.handleSinkButtonPress = this.handleSinkButtonPress.bind(this);
     this.handleWallButtonPress = this.handleWallButtonPress.bind(this);
@@ -30,6 +35,16 @@ export class NodeGrid extends Component {
     this.setState({
       nodes: this.createNewGrid(),
     });
+  }
+
+  doDjkstras = () => {
+    const sourceCoords = this.state.source.row * NUM_COLS + this.state.source.col;
+    const sinkCoords = this.state.sink.row * NUM_COLS + this.state.sink.col;
+    const newGrid = djkstras(this.state.nodes, sourceCoords, sinkCoords);
+
+    this.setState({
+      nodes: newGrid
+    })
   }
 
   handleSourceButtonPress = () => {
@@ -52,8 +67,8 @@ export class NodeGrid extends Component {
 
   createNewGrid = () => {
     let newNodes = [];
-    for (let i = 0; i < 50; i++) {
-      for (let j = 0; j < 45; j++) {
+    for (let i = 0; i < NUM_ROWS; i++) {
+      for (let j = 0; j < NUM_COLS; j++) {
         newNodes.push({
           row: i,
           col: j,
@@ -67,20 +82,20 @@ export class NodeGrid extends Component {
 
   changeSource = (grid, row, column) => {
     const newGrid = grid.slice();
-    const node = newGrid[row * 45 + column];
+    const node = newGrid[row * NUM_COLS + column];
     const newNode = {
       ...node,
       type: "Source",
     };
-    newGrid[row * 45 + column] = newNode;
+    newGrid[row * NUM_COLS + column] = newNode;
 
     if (this.state.source) {
-      const oldSource = newGrid[(this.state.source.row, this.state.source.col)];
+      const oldSource = newGrid[(this.state.source.row * NUM_COLS + this.state.source.col)];
       const revertedSource = {
         ...oldSource,
         type: "Path",
       };
-      newGrid[this.state.source.row * 45 + this.state.source.col] =
+      newGrid[this.state.source.row * NUM_COLS + this.state.source.col] =
         revertedSource;
     }
 
@@ -91,25 +106,25 @@ export class NodeGrid extends Component {
 
   changeSink = (grid, row, column) => {
     const newGrid = grid.slice();
-    const node = newGrid[row * 45 + column];
+    const node = newGrid[row * NUM_COLS + column];
 
     const newNode = {
       ...node,
       type: "Sink",
     };
-    newGrid[row * 45 + column] = newNode;
+    newGrid[row * NUM_COLS + column] = newNode;
 
     if (this.state.sink) {
-      const oldSink = newGrid[(this.state.sink.row, this.state.sink.col)];
+      const oldSink = newGrid[(this.state.sink.row * NUM_COLS + this.state.sink.col)];
       const revertedSink = {
         ...oldSink,
         type: "Path",
       };
-      newGrid[this.state.sink.row * 45 + this.state.sink.col] = revertedSink;
+      newGrid[this.state.sink.row * NUM_COLS + this.state.sink.col] = revertedSink;
     }
 
     this.setState({
-      nodes: newGrid,
+      nodes: newGrid
     });
   };
 
@@ -143,15 +158,13 @@ export class NodeGrid extends Component {
 
   addOrRemoveWall = (grid, row, column) => {
     const newGrid = grid.slice();
-    const node = newGrid[row * 45 + column];
-
-    console.log(this.state);
+    const node = newGrid[row * NUM_COLS + column];
 
     const newNode = {
       ...node,
       type: node.type === "Wall" ? "Path" : "Wall",
     };
-    newGrid[row * 45 + column] = newNode;
+    newGrid[row * NUM_COLS + column] = newNode;
 
     this.setState({
       nodes: newGrid,
@@ -172,6 +185,12 @@ export class NodeGrid extends Component {
       nodes: newGrid,
     });
   };
+
+  clearAll = () => {
+    this.setState({
+      nodes: this.createNewGrid()
+    })
+  }
 
   render() {
     const { nodes } = this.state;
@@ -212,6 +231,18 @@ export class NodeGrid extends Component {
             className="changeNodeSelect"
           >
             Clear Walls
+          </button>
+          <button
+            onClick={() => this.clearAll()}
+            className="changeNodeSelect"
+          >
+            Clear All
+          </button>
+          <button
+            onClick={() => this.doDjkstras()}
+            className="changeNodeSelect"
+          >
+            Do Djkstras
           </button>
         </div>
       </div>

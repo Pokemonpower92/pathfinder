@@ -1,7 +1,17 @@
 .nodePath,
 .nodeSource,
-.nodeSink {
+.nodeSink,
+.nodeWall,
+.nodeShortestPath {
+	display: flex;
 	border: 1px solid black;
+	text-align: center;
+	align-items: center;
+	justify-content: center;
+}
+
+.nodeShortestPath {
+	background-color: yellow;
 }
 
 .nodePath {

@@ -4,7 +4,7 @@ import "./styles/Node.css";
 
 export class Node extends Component {
   render() {
-    const { row, col, type } = this.props;
+    const { type } = this.props;
     return (
       <div
         className={"node" + type}
